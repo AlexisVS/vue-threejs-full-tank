@@ -6,6 +6,7 @@
 import { onMounted, ref } from "vue";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // variables
 let canvas = ref(null),
@@ -13,6 +14,7 @@ let canvas = ref(null),
   renderer,
   gltfLoader = new GLTFLoader(),
   camera,
+  orbitControls,
   tank,
   light;
 
@@ -23,6 +25,7 @@ const init = () => {
   initRenderer();
   initScene();
   initCamera();
+  initOrbitControls();
   initLoader();
   initLight();
   initTank();
@@ -53,7 +56,14 @@ const initCamera = () => {
     1000
   );
   camera.position.set(0, 1, 0);
+  let cameraHelper = new THREE.CameraHelper(camera);
+  scene.add(cameraHelper);
   scene.add(camera);
+};
+
+const initOrbitControls = () => {
+  orbitControls = new OrbitControls(camera, renderer.domElement);
+  orbitControls.update();
 };
 
 const initLoader = () => {
@@ -62,15 +72,17 @@ const initLoader = () => {
 
 const initLight = () => {
   light = new THREE.DirectionalLight(0xff0000, 100);
+  let lightHelper = new THREE.DirectionalLightHelper(light, 5);
+  scene.add(lightHelper);
   light.position.set(2, 2, 2);
   scene.add(light);
 };
 
 const initTank = () => {
-  gltfLoader.load("/public/object/cube/scene.gltf", (gltf) => {
+  gltfLoader.load("/public/object/tank/scene.gltf", (gltf) => {
     const tank = gltf.scene;
-    scene.add(tank);
     const box = new THREE.Box3().setFromObject(tank);
+    scene.add(tank);
   });
   console.log(tank);
   // scene.add(tank.scene);
@@ -78,6 +90,7 @@ const initTank = () => {
 
 const animate = () => {
   window.requestAnimationFrame(animate);
+  orbitControls.update();
   renderer.render(scene, camera);
 };
 
