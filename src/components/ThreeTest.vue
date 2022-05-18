@@ -71,7 +71,7 @@ const initLoader = () => {
 };
 
 const initLight = () => {
-  light = new THREE.DirectionalLight(0xff0000, 100);
+  light = new THREE.DirectionalLight(0xffffff, 10);
   let lightHelper = new THREE.DirectionalLightHelper(light, 5);
   scene.add(lightHelper);
   light.position.set(2, 2, 2);
@@ -81,7 +81,7 @@ const initLight = () => {
 const initTank = () => {
   gltfLoader.load("/public/object/tank/scene.gltf", (gltf) => {
     const tank = gltf.scene;
-    const box = new THREE.Box3().setFromObject(tank);
+    // const box = new THREE.Box3().setFromObject(tank);
     scene.add(tank);
   });
   console.log(tank);
